@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">UaiGas</string>
+    <string name="sign_in">Entrar</string>
+    <string name="sign_up">Cria conta</string>
+    <string name="reset_password">Esqueceu sua senha?</string>
+    <string name="prompt_email">Insira seu email</string>
+    <string name="prompt_password">Insira sua senha</string>
+    <string name="gas_station_icon">Icon</string>
+    <string name="prompt_name">Insira seu nome</string>
+    <string name="prompt_confirm_password">Repita sua senha</string>
+    <string name="title_register">Cadastro</string>
+    <string name="title_login">Entrar</string>
+    <string name="clear">Limpar</string>
 </resources>
