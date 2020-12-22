@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import com.google.android.material.textfield.TextInputLayout
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -14,26 +15,36 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     fun register(view: View) {
-        val email = findViewById<EditText>(R.id.email)
-        val password = findViewById<EditText>(R.id.password)
-        val confirmPassword = findViewById<EditText>(R.id.confirm_password)
+        val email = findViewById<TextInputLayout>(R.id.email).editText?.text
+        val name = findViewById<TextInputLayout>(R.id.name).editText?.text
+        val password = findViewById<TextInputLayout>(R.id.password).editText?.text
+        val confirmPassword = findViewById<TextInputLayout>(R.id.confirm_password).editText?.text
 
-        var message: String = if (password.text.toString()
-                .contentEquals(confirmPassword.text.toString())
-        ) email.text.toString() else "As senhas precisam ser iguais!"
+        val validatorFill = email.toString().isNullOrEmpty() || name.toString().isNullOrEmpty()
+                || password.toString().isNullOrEmpty() || confirmPassword.toString().isNullOrEmpty()
+
+        val validatorConfirmPassword = !password.toString().contentEquals(confirmPassword.toString())
+
+        var message = ""
+
+        when {
+            validatorFill -> message = "Os campos são de preenchimento obrigatório!"
+            validatorConfirmPassword -> message = "As senhas precisam ser iguais!"
+            else -> message = email.toString()
+        }
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
     fun clearFields(view: View) {
-        val email = findViewById<EditText>(R.id.email)
-        val name = findViewById<EditText>(R.id.name)
-        val password = findViewById<EditText>(R.id.password)
-        val confirmPassword = findViewById<EditText>(R.id.confirm_password)
+        val email = findViewById<TextInputLayout>(R.id.email).editText?.text
+        val name = findViewById<TextInputLayout>(R.id.name).editText?.text
+        val password = findViewById<TextInputLayout>(R.id.password).editText?.text
+        val confirmPassword = findViewById<TextInputLayout>(R.id.confirm_password).editText?.text
 
-        email.text.clear()
-        name.text.clear()
-        password.text.clear()
-        confirmPassword.text.clear()
+        email?.clear()
+        name?.clear()
+        password?.clear()
+        confirmPassword?.clear()
     }
 }
