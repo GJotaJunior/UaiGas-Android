@@ -1,10 +1,14 @@
 package com.uai.uaigas
 
+import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
-import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class LoginActivity : AppCompatActivity() {
@@ -26,6 +30,31 @@ class LoginActivity : AppCompatActivity() {
                 email.toString()
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    fun btnResetPassword(view: View) {
+        val textInputLayout = TextInputLayout(this)
+        textInputLayout.placeholderText = getString(R.string.placeholder_email)
+        val editText = TextInputEditText(textInputLayout.context)
+        editText.hint = "Informe seu email"
+        editText.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+
+        var layout = FrameLayout(this)
+        layout.addView(editText)
+        layout.setPadding(45, 15, 45, 0)
+
+        val alert = MaterialAlertDialogBuilder(this)
+        alert.setTitle("Resetar senha: ")
+            .setView(layout)
+            .setPositiveButton("Recuperar", DialogInterface.OnClickListener { dialog, which ->
+                run {
+                    val email = editText.text.toString()
+                    Toast.makeText(this, "Acesse o email enviado para você", Toast.LENGTH_SHORT)
+                        .show();
+                }
+            }).setNegativeButton("Cancelar", DialogInterface.OnClickListener { dialog, which ->
+                dialog.dismiss()
+            }).show()
     }
 
     fun clearFields(view: View) {
