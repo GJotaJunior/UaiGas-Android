@@ -8,7 +8,7 @@
     <string name="placeholder_password">Insira sua senha</string>
     <string name="placeholder_name">Ex: Fulano Cunha de Souza</string>
     <string name="placeholder_confirm_password">Repita sua senha</string>
-    <string name="title_register">Cadastro</string>
+    <string name="title_register">Cadastrar</string>
     <string name="title_login">Entrar</string>
     <string name="clear">Limpar</string>
     <string name="email">Email</string>

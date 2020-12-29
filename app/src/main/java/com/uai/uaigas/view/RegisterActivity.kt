@@ -1,12 +1,17 @@
-package com.uai.uaigas
+package com.uai.uaigas.view
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.google.android.material.textfield.TextInputLayout
+import com.uai.uaigas.R
+import com.uai.uaigas.api.RetrofitClient
+import com.uai.uaigas.model.UserModel
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -28,17 +33,38 @@ class RegisterActivity : AppCompatActivity() {
         val validatorFill = email.toString().isNullOrEmpty() || name.toString().isNullOrEmpty()
                 || password.toString().isNullOrEmpty() || confirmPassword.toString().isNullOrEmpty()
 
-        val validatorConfirmPassword = !password.toString().contentEquals(confirmPassword.toString())
-
-        var message = ""
+        val validatorConfirmPassword =
+            !password.toString().contentEquals(confirmPassword.toString())
 
         when {
-            validatorFill -> message = "Os campos são de preenchimento obrigatório!"
-            validatorConfirmPassword -> message = "As senhas precisam ser iguais!"
-            else -> message = email.toString()
-        }
+            validatorFill -> Toast.makeText(
+                this,
+                "Os campos são de preenchimento obrigatório!",
+                Toast.LENGTH_SHORT
+            ).show()
+            validatorConfirmPassword -> Toast.makeText(
+                this,
+                "As senhas precisam ser iguais!",
+                Toast.LENGTH_SHORT
+            ).show()
+            else -> {
+                var user: UserModel =
+                    UserModel(name.toString(), email.toString())
+                RetrofitClient.instance.createUser(user).enqueue(object : Callback<UserModel> {
+                    override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                    }
 
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                    override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                        Toast.makeText(
+                            applicationContext,
+                            response.body()?.id.toString(),
+                            Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                })
+            }
+        }
     }
 
     fun clearFields(view: View) {

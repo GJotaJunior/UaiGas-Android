@@ -1,4 +1,4 @@
-package com.uai.uaigas
+package com.uai.uaigas.view
 
 import android.app.Activity
 import android.content.Intent
@@ -16,22 +16,22 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.uai.uaigas.R
+import com.uai.uaigas.service.AuthService
+import com.uai.uaigas.service.UserService
 
 class ProfileActivity : AppCompatActivity() {
 
     lateinit var name: TextInputLayout
     lateinit var email: TextInputLayout
     lateinit var userPhoto: ImageView
-    lateinit private var storageRef: StorageReference
+    private lateinit var storageRef: StorageReference
     private val pickImage = 100
     private var imageUri: Uri? = null
+    private var user = AuthService.user
 
-    //    Mocks
-    private var idMock = 3
-    private var nameMock = "Alfredo Borges Santana"
-    private var emailMock = "alfredo.b.s@uaigas.com"
-    private var photoUrlMock =
-        "https://image.freepik.com/free-vector/portrait-african-american-woman-profile-avatar-young-black-girl_102172-418.jpg"
+    // MOCK
+    private val passwordMock = "123456"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,22 +45,33 @@ class ProfileActivity : AppCompatActivity() {
         email = findViewById(R.id.email)
         userPhoto = findViewById(R.id.user_photo)
 
-        storageRef = FirebaseStorage.getInstance().getReference("users/${idMock}")
-        updatePhotoUrl("https://firebasestorage.googleapis.com/v0/b/${storageRef.bucket}/o/users%2F${idMock}?alt=media");
+        storageRef = FirebaseStorage.getInstance().getReference("users/${user?.id}")
 
-        chargeProfileInfo(nameMock, emailMock, photoUrlMock)
-        chargeUserPhoto(photoUrlMock)
+        chargeProfileInfo()
+        chargeUserPhoto()
     }
 
     fun updateProfileInfo(view: View) {
-//        TODO atualizar no backend
         val password = findViewById<TextInputLayout>(R.id.password).editText?.text
 
-        val validator = !password.toString().isNullOrEmpty()
+        val validatorEmpty = password.toString().isNullOrEmpty() || name.editText?.text.toString()
+            .isNullOrEmpty() || email.editText?.text.toString().isNullOrEmpty()
+        val validatorPassword = !password.toString().contentEquals(passwordMock)
 
-        var message =
-            if (validator) "Alterado com sucesso!"
-            else "Senha incorreta!"
+        var message: String
+
+        when {
+            validatorEmpty ->
+                message = "Todos os campos precisam estar preenchidos!"
+            validatorPassword -> message = "Informe a senha correta"
+            else -> {
+                UserService.updateProfileInfo(
+                    email.editText?.text.toString(),
+                    name.editText?.text.toString()
+                )
+                message = "Alterado com sucesso!"
+            }
+        }
 
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
@@ -77,8 +88,7 @@ class ProfileActivity : AppCompatActivity() {
             imageUri?.let {
                 storageRef.putFile(it).addOnSuccessListener { taskSnapshot ->
                     Toast.makeText(this, "Foto alterada!", Toast.LENGTH_SHORT).show()
-                    photoUrlMock =
-                        "https://firebasestorage.googleapis.com/v0/b/${storageRef.bucket}/o/users%2F${idMock}?alt=media)"
+                    updatePhotoUrl("https://firebasestorage.googleapis.com/v0/b/${storageRef.bucket}/o/users%2F${user?.id}?alt=media")
                     chargeUserPhoto(it)
                 }.addOnFailureListener {
                     Log.d("Erro!", it.toString())
@@ -88,10 +98,10 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun chargeProfileInfo(name: String, email: String, photoUrl: String) {
-        this.name.editText?.setText(name)
-        this.email.editText?.setText(email)
-        chargeUserPhoto(photoUrl)
+    private fun chargeProfileInfo() {
+        this.name.editText?.setText(user?.nome)
+        this.email.editText?.setText(user?.email)
+        chargeUserPhoto()
     }
 
     private fun chargeUserPhoto(uri: Uri) {
@@ -99,13 +109,12 @@ class ProfileActivity : AppCompatActivity() {
             .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(userPhoto)
     }
 
-    private fun chargeUserPhoto(path: String) {
-        Glide.with(this).load(path).error(R.drawable.default_avatar).centerCrop()
+    private fun chargeUserPhoto() {
+        Glide.with(this).load(user?.fotoUrl).error(R.drawable.default_avatar).centerCrop()
             .diskCacheStrategy(DiskCacheStrategy.NONE).skipMemoryCache(true).into(userPhoto)
     }
 
     private fun updatePhotoUrl(url: String) {
-        photoUrlMock = url
-//        TODO Atualizar no backend
+        UserService.updatePhotoUrl(url)
     }
 }
