@@ -5,10 +5,12 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.NavUtils
 import com.google.android.material.textfield.TextInputLayout
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.model.UserModel
+import com.uai.uaigas.service.AuthService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,18 +51,26 @@ class RegisterActivity : AppCompatActivity() {
             ).show()
             else -> {
                 var user: UserModel =
-                    UserModel(name.toString(), email.toString())
+                    UserModel(
+                        nome = name.toString(),
+                        email = email.toString(),
+                        senha = password.toString()
+                    )
                 RetrofitClient.instance.createUser(user).enqueue(object : Callback<UserModel> {
                     override fun onFailure(call: Call<UserModel>, t: Throwable) {
                         Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
-                        Toast.makeText(
-                            applicationContext,
-                            response.body()?.id.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show();
+                        response.body()?.let {
+                            AuthService.user = it
+                            NavUtils.navigateUpFromSameTask(this@RegisterActivity)
+                            Toast.makeText(
+                                applicationContext,
+                                "Bem vindo(a) ${it.nome}!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 })
             }

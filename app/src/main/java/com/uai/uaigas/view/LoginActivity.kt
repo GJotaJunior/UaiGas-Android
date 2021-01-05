@@ -3,6 +3,7 @@ package com.uai.uaigas.view
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -45,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
             )
                 .show()
             else -> {
-                var user = UserModel(email.toString(), password.toString())
+                var user = UserModel(email = email.toString(), senha = password.toString())
                 RetrofitClient.instance.login(user).enqueue(object : Callback<UserModel> {
                     override fun onFailure(call: Call<UserModel>, t: Throwable) {
                         Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
@@ -57,12 +58,12 @@ class LoginActivity : AppCompatActivity() {
                                 response.body()?.let {
                                     AuthService.user = it
                                     NavUtils.navigateUpFromSameTask(this@LoginActivity)
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Bem vindo(a) ${it.nome}!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
-                                Toast.makeText(
-                                    applicationContext,
-                                    response.body()?.nome,
-                                    Toast.LENGTH_SHORT
-                                ).show()
                             }
                             response.code() == 400 -> Toast.makeText(
                                 applicationContext,
