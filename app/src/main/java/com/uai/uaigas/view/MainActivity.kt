@@ -31,11 +31,15 @@ class MainActivity : AppCompatActivity() {
         var signUpItem = menu?.findItem(R.id.item_sign_up)
         var profileItem = menu?.findItem(R.id.item_profile)
         var signOutItem = menu?.findItem(R.id.item_sign_out)
+        var fuelItem = menu?.findItem(R.id.item_fuel)
 
         signInItem?.isVisible = !loggedIn()
         signUpItem?.isVisible = !loggedIn()
         profileItem?.isVisible = loggedIn()
         signOutItem?.isVisible = loggedIn()
+        AuthService.user?.let {
+            fuelItem?.isVisible = it.admin
+        }
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -46,7 +50,8 @@ class MainActivity : AppCompatActivity() {
             R.id.item_sign_up -> startActivity(Intent(this, RegisterActivity::class.java))
             R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
             R.id.item_sign_out -> signOut()
-            else -> Toast.makeText(this, item.title, Toast.LENGTH_SHORT).show()
+            else -> Toast.makeText(this, "${item.title} ainda não implementado", Toast.LENGTH_SHORT)
+                .show()
         }
 
         return super.onOptionsItemSelected(item)

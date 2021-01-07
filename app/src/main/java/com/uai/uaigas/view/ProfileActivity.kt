@@ -17,8 +17,13 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.uai.uaigas.R
+import com.uai.uaigas.api.RetrofitClient
+import com.uai.uaigas.model.UserModel
 import com.uai.uaigas.service.AuthService
-import com.uai.uaigas.service.UserService
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -29,9 +34,6 @@ class ProfileActivity : AppCompatActivity() {
     private val pickImage = 100
     private var imageUri: Uri? = null
     private var user = AuthService.user
-
-    // MOCK
-    private val passwordMock = "123456"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,24 +58,23 @@ class ProfileActivity : AppCompatActivity() {
 
         val validatorEmpty = password.toString().isNullOrEmpty() || name.editText?.text.toString()
             .isNullOrEmpty() || email.editText?.text.toString().isNullOrEmpty()
-        val validatorPassword = !password.toString().contentEquals(passwordMock)
-
-        var message: String
 
         when {
             validatorEmpty ->
-                message = "Todos os campos precisam estar preenchidos!"
-            validatorPassword -> message = "Informe a senha correta"
+                Toast.makeText(
+                    applicationContext,
+                    "Todos os campos precisam estar preenchidos!",
+                    Toast.LENGTH_SHORT
+                ).show();
             else -> {
-                UserService.updateProfileInfo(
-                    email.editText?.text.toString(),
-                    name.editText?.text.toString()
+                val user = UserModel(
+                    nome = name.editText?.text.toString(),
+                    email = email.editText?.text.toString(),
+                    senha = password.toString()
                 )
-                message = "Alterado com sucesso!"
+                updateUser(user)
             }
         }
-
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     fun updateProfilePhoto(view: View) {
@@ -115,6 +116,49 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun updatePhotoUrl(url: String) {
-        UserService.updatePhotoUrl(url)
+        AuthService.user?.let {
+            it.fotoUrl = url
+            updateUser(it)
+        }
+    }
+
+    private fun updateUser(user: UserModel) {
+        RetrofitClient.instance.updateUser(user).enqueue(object : Callback<UserModel> {
+            override fun onFailure(call: Call<UserModel>, t: Throwable) {
+                Toast.makeText(applicationContext, t.message?.toString(), Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(
+                call: Call<UserModel>,
+                response: Response<UserModel>
+            ) {
+                when {
+                    response.isSuccessful -> {
+                        response.body()?.let {
+                            AuthService.user = it
+                            Toast.makeText(
+                                applicationContext,
+                                "Perfil atualizado com sucesso!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                    response.code() == 400 -> {
+                        response.errorBody()?.let {
+                            var resp = it.string()
+                            if (resp.contains("message")) {
+                                resp = JSONObject(resp).getString("message")
+                            }
+                            Toast.makeText(applicationContext, resp, Toast.LENGTH_SHORT).show()
+                        }
+                    }
+                    else -> Toast.makeText(
+                        applicationContext,
+                        "Ocorreu um erro, tente novamente!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 }

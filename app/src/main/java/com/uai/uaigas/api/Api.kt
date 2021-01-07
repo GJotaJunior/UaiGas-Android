@@ -18,6 +18,6 @@ interface Api {
     @POST("/usuario/forgot")
     fun forgot(@Body email: EmailDTO): Call<Void>
 
-    @PUT("/usuario/{id}")
-    fun updateUser(@Path("id") id: Long, @Body user: UserModel): Call<UserModel>
+    @PUT("/usuario")
+    fun updateUser(@Body user: UserModel): Call<UserModel>
 }
