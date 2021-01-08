@@ -11,6 +11,7 @@ import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.model.UserModel
 import com.uai.uaigas.service.AuthService
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -62,14 +63,26 @@ class RegisterActivity : AppCompatActivity() {
                     }
 
                     override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
-                        response.body()?.let {
-                            AuthService.user = it
-                            NavUtils.navigateUpFromSameTask(this@RegisterActivity)
-                            Toast.makeText(
-                                applicationContext,
-                                "Bem vindo(a) ${it.nome}!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                        when {
+                            response.isSuccessful -> response.body()?.let {
+                                AuthService.user = it
+                                NavUtils.navigateUpFromSameTask(this@RegisterActivity)
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Bem vindo(a) ${it.nome}!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            response.code() == 400 -> {
+                                response.errorBody()?.let {
+                                    var resp = it.string()
+                                    if (resp.contains("message")) {
+                                        resp = JSONObject(resp).getString("message")
+                                    }
+                                    Toast.makeText(applicationContext, resp, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
                         }
                     }
                 })

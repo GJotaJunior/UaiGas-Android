@@ -18,6 +18,7 @@ import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.dto.EmailDTO
 import com.uai.uaigas.model.UserModel
 import com.uai.uaigas.service.AuthService
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -65,11 +66,16 @@ class LoginActivity : AppCompatActivity() {
                                     ).show()
                                 }
                             }
-                            response.code() == 400 -> Toast.makeText(
-                                applicationContext,
-                                "O email e/ou senha não estão corretos!",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            response.code() == 400 -> {
+                                response.errorBody()?.let {
+                                    var resp = it.string()
+                                    if (resp.contains("message")) {
+                                        resp = JSONObject(resp).getString("message")
+                                    }
+                                    Toast.makeText(applicationContext, resp, Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                            }
                             else -> Toast.makeText(
                                 applicationContext,
                                 "Ocorreu um erro, tente novamente!",
