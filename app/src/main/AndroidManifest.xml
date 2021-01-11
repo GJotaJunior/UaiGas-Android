@@ -13,6 +13,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UaiGas">
+        <activity android:name=".view.FuelList">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.MainActivity" />
+        </activity>
+        <activity android:name=".view.EditFuelActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.FuelList" />
+        </activity>
+        <activity android:name=".view.FuelTypeList">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.MainActivity" />
+        </activity>
+        <activity android:name=".view.EditFuelTypeActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".view.FuelTypeList" />
+        </activity>
         <activity android:name=".view.ProfileActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

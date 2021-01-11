@@ -3,7 +3,6 @@ package com.uai.uaigas.view
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
-import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
@@ -16,7 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.dto.EmailDTO
-import com.uai.uaigas.model.UserModel
+import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 import org.json.JSONObject
 import retrofit2.Call
@@ -47,13 +46,13 @@ class LoginActivity : AppCompatActivity() {
             )
                 .show()
             else -> {
-                var user = UserModel(email = email.toString(), senha = password.toString())
-                RetrofitClient.instance.login(user).enqueue(object : Callback<UserModel> {
-                    override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                var user = User(email = email.toString(), senha = password.toString())
+                RetrofitClient.instance.login(user).enqueue(object : Callback<User> {
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Toast.makeText(applicationContext, "Ocorreu um erro, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
                     }
 
-                    override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
                         when {
                             response.isSuccessful -> {
                                 response.body()?.let {
@@ -108,7 +107,7 @@ class LoginActivity : AppCompatActivity() {
                     val emailDto = EmailDTO(editText.text.toString())
                     RetrofitClient.instance.forgot(emailDto).enqueue(object : Callback<Void> {
                         override fun onFailure(call: Call<Void>, t: Throwable) {
-                            Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                            Toast.makeText(applicationContext, "Ocorreu um erro, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
                         }
 
                         override fun onResponse(call: Call<Void>, response: Response<Void>) {

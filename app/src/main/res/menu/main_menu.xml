@@ -28,8 +28,14 @@
 
     <item
         android:id="@+id/item_fuel"
+        android:title="Combustível"
+        android:visible="true"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/item_fuel_type"
         android:title="Tipo de combustível"
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="never" />
 
 </menu>

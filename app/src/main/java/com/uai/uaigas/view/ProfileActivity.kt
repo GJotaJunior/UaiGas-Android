@@ -18,7 +18,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
-import com.uai.uaigas.model.UserModel
+import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 import org.json.JSONObject
 import retrofit2.Call
@@ -67,7 +67,7 @@ class ProfileActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show();
             else -> {
-                val user = UserModel(
+                val user = User(
                     nome = name.editText?.text.toString(),
                     email = email.editText?.text.toString(),
                     senha = password.toString()
@@ -122,15 +122,15 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateUser(user: UserModel) {
-        RetrofitClient.instance.updateUser(user).enqueue(object : Callback<UserModel> {
-            override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                Toast.makeText(applicationContext, t.message?.toString(), Toast.LENGTH_SHORT).show()
+    private fun updateUser(user: User) {
+        RetrofitClient.instance.updateUser(user).enqueue(object : Callback<User> {
+            override fun onFailure(call: Call<User>, t: Throwable) {
+                Toast.makeText(applicationContext, "Ocorreu um erro, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
             }
 
             override fun onResponse(
-                call: Call<UserModel>,
-                response: Response<UserModel>
+                call: Call<User>,
+                response: Response<User>
             ) {
                 when {
                     response.isSuccessful -> {

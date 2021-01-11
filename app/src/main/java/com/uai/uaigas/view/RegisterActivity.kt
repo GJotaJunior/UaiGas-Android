@@ -9,7 +9,7 @@ import androidx.core.app.NavUtils
 import com.google.android.material.textfield.TextInputLayout
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
-import com.uai.uaigas.model.UserModel
+import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 import org.json.JSONObject
 import retrofit2.Call
@@ -51,18 +51,18 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             else -> {
-                var user: UserModel =
-                    UserModel(
+                var user: User =
+                    User(
                         nome = name.toString(),
                         email = email.toString(),
                         senha = password.toString()
                     )
-                RetrofitClient.instance.createUser(user).enqueue(object : Callback<UserModel> {
-                    override fun onFailure(call: Call<UserModel>, t: Throwable) {
-                        Toast.makeText(applicationContext, t.message, Toast.LENGTH_SHORT).show()
+                RetrofitClient.instance.createUser(user).enqueue(object : Callback<User> {
+                    override fun onFailure(call: Call<User>, t: Throwable) {
+                        Toast.makeText(applicationContext, "Ocorreu um erro, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
                     }
 
-                    override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
+                    override fun onResponse(call: Call<User>, response: Response<User>) {
                         when {
                             response.isSuccessful -> response.body()?.let {
                                 AuthService.user = it

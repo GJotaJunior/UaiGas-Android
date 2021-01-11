@@ -1,8 +1,8 @@
 package com.uai.uaigas.service
 
-import com.uai.uaigas.model.UserModel
+import com.uai.uaigas.model.User
 
 object AuthService {
-    var user: UserModel? = null
+    var user: User? = null
     var loggedIn: () -> Boolean = { user != null }
 }

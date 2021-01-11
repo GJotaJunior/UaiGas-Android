@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
         var profileItem = menu?.findItem(R.id.item_profile)
         var signOutItem = menu?.findItem(R.id.item_sign_out)
         var fuelItem = menu?.findItem(R.id.item_fuel)
+        var fuelTypeItem = menu?.findItem(R.id.item_fuel_type)
 
         signInItem?.isVisible = !loggedIn()
         signUpItem?.isVisible = !loggedIn()
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
         signOutItem?.isVisible = loggedIn()
         AuthService.user?.let {
             fuelItem?.isVisible = it.admin
+            fuelTypeItem?.isVisible = it.admin
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -49,6 +51,8 @@ class MainActivity : AppCompatActivity() {
             R.id.item_sign_in -> startActivity(Intent(this, LoginActivity::class.java))
             R.id.item_sign_up -> startActivity(Intent(this, RegisterActivity::class.java))
             R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
+            R.id.item_fuel -> startActivity(Intent(this, FuelList::class.java))
+            R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_sign_out -> signOut()
             else -> Toast.makeText(this, "${item.title} ainda não implementado", Toast.LENGTH_SHORT)
                 .show()

@@ -1,6 +1,6 @@
 package com.uai.uaigas.model
 
-class UserModel(
+class User(
     var nome: String? = null,
     var email: String? = null,
     var senha: String?,
