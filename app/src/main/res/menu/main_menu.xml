@@ -9,6 +9,11 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/item_map"
+        android:icon="@drawable/ic_map"
+        android:title="Mapa"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/item_sign_up"
         android:icon="@drawable/ic_reg"
         android:title="Cadastrar"
