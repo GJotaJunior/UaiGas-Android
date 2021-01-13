@@ -106,3 +106,4 @@ lint/tmp/
 
 # Firebase
 google-services.json
+secrets.properties
