@@ -2,6 +2,7 @@ package com.uai.uaigas.api
 
 import com.uai.uaigas.dto.EmailDTO
 import com.uai.uaigas.model.Combustivel
+import com.uai.uaigas.model.Endereco
 import com.uai.uaigas.model.TipoCombustivel
 import com.uai.uaigas.model.User
 import retrofit2.Call
