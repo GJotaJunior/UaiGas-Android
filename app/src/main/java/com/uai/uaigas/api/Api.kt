@@ -43,4 +43,7 @@ interface Api {
 
     @DELETE("/tipo-combustivel/{id}")
     fun deleteFuelType(@Path("id") id: Long): Call<Void>
+
+    @GET("/endereco/{city}")
+    fun findGasStationByCidade(@Path("city") city: String): Call<List<Endereco>>
 }

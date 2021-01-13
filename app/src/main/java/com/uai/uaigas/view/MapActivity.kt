@@ -12,7 +12,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.google.android.gms.location.*
+import com.google.android.gms.common.internal.safeparcel.SafeParcelable
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,6 +20,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.uai.uaigas.R
+import com.uai.uaigas.helper.BitmapHelper
+import com.uai.uaigas.model.Endereco
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -44,8 +46,26 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
-        map.addMarker(MarkerOptions().position(locale!!).title("Você"))
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(locale, 15.0f))
+
+        gasStationList?.forEach {
+            map.addMarker(
+                it.latitude?.toDouble()?.let { it1 ->
+                    it.longitude?.toDouble()?.let { it2 ->
+                        LatLng(it1,
+                            it2
+                        )
+                    }
+                }?.let { it2 ->
+                    MarkerOptions().position(it2)
+                        .title(
+                            it.posto?.descricao
+                        ).icon(gasIcon)
+                }
+            )
+        }
+
+        map.addMarker(MarkerOptions().position(locale).title("Você"))
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(locale, 14.0f))
     }
 
     private fun getLatLng(location: String?): LatLng {
