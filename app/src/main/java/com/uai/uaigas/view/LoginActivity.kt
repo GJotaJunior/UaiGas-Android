@@ -1,5 +1,6 @@
 package com.uai.uaigas.view
 
+import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.text.InputType
@@ -57,6 +58,7 @@ class LoginActivity : AppCompatActivity() {
                             response.isSuccessful -> {
                                 response.body()?.let {
                                     AuthService.user = it
+                                    saveUser(it)
                                     NavUtils.navigateUpFromSameTask(this@LoginActivity)
                                     Toast.makeText(
                                         applicationContext,
@@ -142,5 +144,15 @@ class LoginActivity : AppCompatActivity() {
 
         email?.clear()
         password?.clear()
+    }
+
+    private fun saveUser(user: User) {
+        var sharedPref = getSharedPreferences("USER", Context.MODE_PRIVATE).edit()
+        sharedPref.putString("id", user.id.toString())
+        sharedPref.putString("nome", user.nome)
+        sharedPref.putString("email", user.email)
+        sharedPref.putBoolean("admin", user.admin)
+        sharedPref.putString("fotoUrl", user.fotoUrl)
+        sharedPref.commit()
     }
 }

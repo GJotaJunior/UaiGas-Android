@@ -33,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_edit"
+            app:iconTint="#009688"
             app:layout_constraintBaseline_toBaselineOf="@+id/delete"
             app:layout_constraintEnd_toStartOf="@+id/delete"
             app:layout_constraintStart_toEndOf="@+id/description" />
@@ -43,6 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:icon="@drawable/ic_delete"
+            app:iconTint="#009688"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

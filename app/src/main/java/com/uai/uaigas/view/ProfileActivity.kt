@@ -30,6 +30,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var name: TextInputLayout
     lateinit var email: TextInputLayout
     lateinit var userPhoto: ImageView
+    lateinit var password: TextInputLayout
     private lateinit var storageRef: StorageReference
     private val pickImage = 100
     private var imageUri: Uri? = null
@@ -46,6 +47,7 @@ class ProfileActivity : AppCompatActivity() {
         name = findViewById(R.id.username)
         email = findViewById(R.id.email)
         userPhoto = findViewById(R.id.user_photo)
+        password = findViewById(R.id.password)
 
         storageRef = FirebaseStorage.getInstance().getReference("users/${user?.id}")
 
@@ -54,10 +56,9 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun updateProfileInfo(view: View) {
-        val password = findViewById<TextInputLayout>(R.id.password).editText?.text
-
-        val validatorEmpty = password.toString().isNullOrEmpty() || name.editText?.text.toString()
-            .isNullOrEmpty() || email.editText?.text.toString().isNullOrEmpty()
+        val validatorEmpty =
+            password.editText?.text.toString().isNullOrEmpty() || name.editText?.text.toString()
+                .isNullOrEmpty() || email.editText?.text.toString().isNullOrEmpty()
 
         when {
             validatorEmpty ->
@@ -78,8 +79,22 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun updateProfilePhoto(view: View) {
-        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
-        startActivityForResult(gallery, pickImage)
+        val validatorEmpty = password.editText?.text.toString().isNullOrEmpty()
+
+        when {
+            validatorEmpty ->
+                Toast.makeText(
+                    applicationContext,
+                    "O campo senha precisa estar preenchido!",
+                    Toast.LENGTH_SHORT
+                ).show();
+            else -> {
+                val gallery =
+                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.INTERNAL_CONTENT_URI)
+                startActivityForResult(gallery, pickImage)
+            }
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,11 +103,8 @@ class ProfileActivity : AppCompatActivity() {
             imageUri = data?.data
             imageUri?.let {
                 storageRef.putFile(it).addOnSuccessListener { taskSnapshot ->
-                    Toast.makeText(this, "Foto alterada!", Toast.LENGTH_SHORT).show()
                     updatePhotoUrl("https://firebasestorage.googleapis.com/v0/b/${storageRef.bucket}/o/users%2F${user?.id}?alt=media")
-                    chargeUserPhoto(it)
                 }.addOnFailureListener {
-                    Log.d("Erro!", it.toString())
                     Toast.makeText(this, "Erro! Tente novamente", Toast.LENGTH_SHORT).show()
                 }
             }
@@ -118,6 +130,7 @@ class ProfileActivity : AppCompatActivity() {
     private fun updatePhotoUrl(url: String) {
         AuthService.user?.let {
             it.fotoUrl = url
+            it.senha = password.editText?.text.toString()
             updateUser(it)
         }
     }
@@ -125,7 +138,11 @@ class ProfileActivity : AppCompatActivity() {
     private fun updateUser(user: User) {
         RetrofitClient.instance.updateUser(user).enqueue(object : Callback<User> {
             override fun onFailure(call: Call<User>, t: Throwable) {
-                Toast.makeText(applicationContext, "Ocorreu um erro, tente novamente mais tarde!", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    applicationContext,
+                    "Ocorreu um erro, tente novamente mais tarde!",
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
             override fun onResponse(
@@ -136,6 +153,7 @@ class ProfileActivity : AppCompatActivity() {
                     response.isSuccessful -> {
                         response.body()?.let {
                             AuthService.user = it
+                            chargeUserPhoto()
                             Toast.makeText(
                                 applicationContext,
                                 "Perfil atualizado com sucesso!",

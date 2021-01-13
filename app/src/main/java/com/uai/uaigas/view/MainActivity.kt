@@ -1,13 +1,16 @@
 package com.uai.uaigas.view
 
+import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import com.uai.uaigas.R
+import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +22,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
+
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        loadUser()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -65,8 +72,33 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun signOut() {
-        AuthService.user = null
+        clearUser()
         finish()
         startActivity(intent)
+    }
+
+    private fun loadUser() {
+        val id = getSharedPreferences("USER", Context.MODE_PRIVATE).getString("id", null)
+        id?.let {
+            val email = getSharedPreferences("USER", Context.MODE_PRIVATE).getString("email", null)
+            val nome = getSharedPreferences("USER", Context.MODE_PRIVATE).getString("nome", null)
+            val admin = getSharedPreferences("USER", Context.MODE_PRIVATE).getBoolean("admin", false)
+            val fotoUrl = getSharedPreferences("USER", Context.MODE_PRIVATE).getString("fotoUrl", null)
+
+            AuthService.user = User(
+                id = it.toLong(),
+                nome = nome,
+                email = email,
+                admin = admin,
+                fotoUrl = fotoUrl
+            )
+        }
+    }
+
+    private fun clearUser() {
+        var sharedPref = getSharedPreferences("USER", Context.MODE_PRIVATE).edit()
+        sharedPref.clear()
+        sharedPref.commit()
+        AuthService.user = null
     }
 }

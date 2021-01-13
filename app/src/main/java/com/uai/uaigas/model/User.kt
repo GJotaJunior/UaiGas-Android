@@ -3,7 +3,7 @@ package com.uai.uaigas.model
 class User(
     var nome: String? = null,
     var email: String? = null,
-    var senha: String?,
+    var senha: String? = null,
     var fotoUrl: String? = null,
     var admin: Boolean = false,
     var id: Long = 0
