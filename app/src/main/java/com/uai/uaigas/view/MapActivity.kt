@@ -1,6 +1,7 @@
 package com.uai.uaigas.view
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -13,11 +14,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.uai.uaigas.R
 import com.uai.uaigas.helper.BitmapHelper
 import com.uai.uaigas.model.Endereco
+import com.uai.uaigas.model.Posto
 
 
 class MapActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var map: GoogleMap
-    private lateinit var gasStationList: List<Endereco>
+    private lateinit var gasStationList: List<Posto>
+    private lateinit var adresses: List<Endereco>
     private val gasIcon: BitmapDescriptor by lazy {
         val color = ContextCompat.getColor(this, R.color.primary)
         BitmapHelper.vectorToBitmap(this, R.drawable.ic_gas, color)
@@ -33,13 +36,14 @@ class MapActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         locale = intent.getParcelableExtra<LatLng>("location")!!
-        gasStationList = intent.getSerializableExtra("gasStationList") as List<Endereco>
+//        gasStationList = intent.getSerializableExtra("gasStationList") as List<Posto>
+        adresses = intent.getSerializableExtra("adresses") as List<Endereco>
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-        gasStationList?.forEach {
+        adresses?.forEach {
             map.addMarker(
                 it.latitude?.toDouble()?.let { it1 ->
                     it.longitude?.toDouble()?.let { it2 ->

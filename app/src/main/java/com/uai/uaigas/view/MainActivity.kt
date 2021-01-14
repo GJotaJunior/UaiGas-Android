@@ -13,6 +13,7 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.model.Endereco
+import com.uai.uaigas.model.Posto
 import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 import org.json.JSONObject
@@ -39,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     private var loggedIn = AuthService.loggedIn
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private lateinit var gasStationList: List<Endereco>
+    private lateinit var adresses: List<Endereco>
     private lateinit var locale: LatLng
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         var fuelItem = menu?.findItem(R.id.item_fuel)
         var fuelTypeItem = menu?.findItem(R.id.item_fuel_type)
         var mapItem = menu?.findItem(R.id.item_map)
+        var gasStationItem = menu?.findItem(R.id.item_gas_station_and_address)
 
         signInItem?.isVisible = !loggedIn()
         signUpItem?.isVisible = !loggedIn()
@@ -80,6 +83,7 @@ class MainActivity : AppCompatActivity() {
             fuelTypeItem?.isVisible = it.admin
         }
         mapItem?.isVisible = loggedIn()
+        gasStationItem?.isVisible = loggedIn()
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -93,8 +97,17 @@ class MainActivity : AppCompatActivity() {
             R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_map -> {
                 val intent = Intent(this, MapActivity::class.java)
-                intent.putExtra("gasStationList", gasStationList as Serializable)
+                intent.putExtra("adresses", adresses as Serializable)
+                var gasStation: List<Posto> = listOf()
+//                adresses?.forEach {
+//                    it.posto?.let { it1 -> gasStation.toMutableList().add(Posto(it1.id, it1.descricao)) }
+//                }
+                intent.putExtra("gasStationList", gasStation as Serializable)
                 intent.putExtra("location", locale)
+                startActivity(intent)
+            }
+            R.id.item_gas_station_and_address -> {
+                val intent = Intent(this, GasStationActivity::class.java)
                 startActivity(intent)
             }
             R.id.item_sign_out -> signOut()
@@ -170,7 +183,7 @@ class MainActivity : AppCompatActivity() {
                                     if (response != null) {
                                         when {
                                             response.isSuccessful -> {
-                                                gasStationList = response?.body()!!
+                                                adresses = response?.body()!!
                                             }
                                             response.code() == 400 -> {
                                                 response.errorBody()?.let {

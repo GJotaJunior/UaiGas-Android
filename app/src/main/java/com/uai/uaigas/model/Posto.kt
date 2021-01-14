@@ -1,39 +1,24 @@
 package com.uai.uaigas.model
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.uai.uaigas.enums.PostoStatus
 
 
-class Posto() : Parcelable {
+data class Posto(var descricao: String?) {
     var id: Long? = null
-    var descricao: String? = null
     var status: PostoStatus? = null
     var reclamacoes: List<Reclamacao>? = null
     var combustiveis: List<CombustivelPosto>? = null
     var endereco: Endereco? = null
 
-    constructor(parcel: Parcel) : this() {
-        id = parcel.readValue(Long::class.java.classLoader) as? Long
-        descricao = parcel.readString()
+    constructor(id: Long?, descricao: String, status: PostoStatus): this(descricao){
+        this.id = id
+        this.status = status
     }
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeValue(id)
-        parcel.writeString(descricao)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Posto> {
-        override fun createFromParcel(parcel: Parcel): Posto {
-            return Posto(parcel)
-        }
-
-        override fun newArray(size: Int): Array<Posto?> {
-            return arrayOfNulls(size)
-        }
+    constructor(id: Long,  descricao: String, status: PostoStatus, reclamacao: List<Reclamacao>, combustivel: List<Combustivel>) : this(descricao){
+        this.id = id
+        this.status = status
+        this.reclamacoes = reclamacoes
+        this.combustiveis = combustiveis
     }
 }
