@@ -97,12 +97,12 @@ class MainActivity : AppCompatActivity() {
             R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_map -> {
                 val intent = Intent(this, MapActivity::class.java)
-                intent.putExtra("adresses", adresses as Serializable)
+                // intent.putExtra("adresses", adresses as Serializable)
                 var gasStation: List<Posto> = listOf()
 //                adresses?.forEach {
 //                    it.posto?.let { it1 -> gasStation.toMutableList().add(Posto(it1.id, it1.descricao)) }
 //                }
-                intent.putExtra("gasStationList", gasStation as Serializable)
+                // intent.putExtra("gasStationList", gasStation as Serializable)
                 intent.putExtra("location", locale)
                 startActivity(intent)
             }

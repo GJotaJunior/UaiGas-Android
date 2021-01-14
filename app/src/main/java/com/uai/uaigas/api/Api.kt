@@ -53,12 +53,12 @@ interface Api {
     @POST
     fun insertGasStation(@Body posto: Posto): Call<Posto>
     @PUT("/posto/{id}")
-    fun updateGasStation(@Path("id") id: Long, @Body posto: Posto): Call<Posto>
+    fun updateGasStation(@Path("id") id: Int, @Body posto: Posto): Call<Posto>
 
     @GET("/endereco/{id}")
     fun findAddress(@Path("id") id: Int): Call<Endereco>
     @POST
     fun insertAddress(@Body endereco: Endereco): Call<Endereco>
     @PUT("/endereco/{id}")
-    fun updateAddress(@Path("id") id: Long, @Body endereco: Endereco): Call<Endereco>
+    fun updateAddress(@Path("id") id: Int, @Body endereco: Endereco): Call<Endereco>
 }

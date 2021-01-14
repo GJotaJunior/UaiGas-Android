@@ -3,6 +3,7 @@ package com.uai.uaigas.view
 import android.location.Address
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -34,8 +35,8 @@ class GasStationActivity : AppCompatActivity() {
     private var gasStation: Posto = Posto()
     private var address: Endereco = Endereco()
     var id: Int = 0
-    var idEndereco: Long? = null
-    var idPosto: Long? = null
+    private var idEndereco: Long? = null
+    private var idPosto: Long? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,10 +56,10 @@ class GasStationActivity : AppCompatActivity() {
         cep = findViewById(R.id.cep)
 
         id = intent.getIntExtra("id", 0)
-        if (id == 0)
-            idEndereco = null
+        idEndereco = if (id == 0)
+            null
         else
-            idEndereco = id.toLong()
+            id.toLong()
 
         chargeGasStationAndAddressInfo(idEndereco)
     }
@@ -97,8 +98,8 @@ class GasStationActivity : AppCompatActivity() {
                             cidade = city.editText?.text.toString(),
                             estado = state.editText?.text.toString(),
                             cep = cep.editText?.text.toString(),
-                            latitude = locale.latitude as Float,
-                            longitude = locale.longitude as Float,
+                            latitude = locale.latitude.toFloat(),
+                            longitude = locale.longitude.toFloat(),
                             posto = gasStation
                         )
                 }
@@ -164,7 +165,7 @@ class GasStationActivity : AppCompatActivity() {
 
     private fun updateGasStationAndAddress() {
         gasStation.id?.let {
-            RetrofitClient.instance.updateGasStation(it, gasStation)
+            RetrofitClient.instance.updateGasStation(it.toInt(), gasStation)
                 .enqueue(object : Callback<Posto> {
                     override fun onFailure(call: Call<Posto>, t: Throwable) {
                         Toast.makeText(
@@ -180,13 +181,11 @@ class GasStationActivity : AppCompatActivity() {
                     ) {
                         when {
                             response.isSuccessful -> {
-                                response.body()?.let {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Posto atualizado com sucesso!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Posto atualizado com sucesso!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                             response.code() == 400 -> {
                                 response.errorBody()?.let {
@@ -210,7 +209,7 @@ class GasStationActivity : AppCompatActivity() {
 
 
         address.id?.let {
-            RetrofitClient.instance.updateAddress(it, address)
+            RetrofitClient.instance.updateAddress(it.toInt(), address)
                 .enqueue(object : Callback<Endereco> {
                     override fun onFailure(call: Call<Endereco>, t: Throwable) {
                         Toast.makeText(
@@ -226,13 +225,11 @@ class GasStationActivity : AppCompatActivity() {
                     ) {
                         when {
                             response.isSuccessful -> {
-                                response.body()?.let {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "Endereço atualizado com sucesso!",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Endereço atualizado com sucesso!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                             response.code() == 400 -> {
                                 response.errorBody()?.let {
@@ -272,13 +269,11 @@ class GasStationActivity : AppCompatActivity() {
                 ) {
                     when {
                         response.isSuccessful -> {
-                            response.body()?.let {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Posto cadastrado com sucesso!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            Toast.makeText(
+                                applicationContext,
+                                "Posto cadastrado com sucesso!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         response.code() == 400 -> {
                             response.errorBody()?.let {
@@ -316,13 +311,11 @@ class GasStationActivity : AppCompatActivity() {
                 ) {
                     when {
                         response.isSuccessful -> {
-                            response.body()?.let {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "Endereço cadastrado com sucesso!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+                            Toast.makeText(
+                                applicationContext,
+                                "Endereço cadastrado com sucesso!",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                         response.code() == 400 -> {
                             response.errorBody()?.let {
