@@ -26,6 +26,11 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/item_gas_station"
+        android:title="Postos"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/item_fuel"
         android:title="Combustível"
         android:visible="false"
@@ -36,12 +41,6 @@
         android:title="Tipo de combustível"
         android:visible="false"
         app:showAsAction="never" />
-
-    <item
-        android:id="@+id/item_gas_station_and_address"
-        android:icon="@drawable/ic_gas"
-        android:title="Posto"
-        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/item_sign_out"

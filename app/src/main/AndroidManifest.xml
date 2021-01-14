@@ -68,7 +68,7 @@
         <activity android:name=".view.GasStationActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.MainActivity" />
+                android:value=".view.GasStationList" />
         </activity>
         <activity android:name=".view.MainActivity">
             <intent-filter>

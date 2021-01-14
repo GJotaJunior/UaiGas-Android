@@ -11,5 +11,16 @@ class Endereco(
     var cep: String? = null,
     var latitude: Float? = null,
     var longitude: Float? = null,
-    var posto: Posto? = null,
-)
+    var posto: Posto? = null
+) {
+    override fun toString(): String {
+        var toString = ""
+        logradouro?.let { toString += it }
+        numero?.let { toString += ", $it" }
+        bairro?.let { toString += " $it" }
+        cidade?.let { toString += " - $it" }
+        estado?.let { toString += " $it" }
+
+        return toString
+    }
+}

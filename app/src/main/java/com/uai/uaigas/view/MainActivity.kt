@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adresses: List<Endereco>
     private lateinit var locale: LatLng
 
+    lateinit var postoIntent: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById<Toolbar>(R.id.toolbar))
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        postoIntent = Intent(applicationContext, GasStationList::class.java)
 
         loadUser()
 
@@ -72,7 +76,6 @@ class MainActivity : AppCompatActivity() {
         var fuelItem = menu?.findItem(R.id.item_fuel)
         var fuelTypeItem = menu?.findItem(R.id.item_fuel_type)
         var mapItem = menu?.findItem(R.id.item_map)
-        var gasStationItem = menu?.findItem(R.id.item_gas_station_and_address)
 
         signInItem?.isVisible = !loggedIn()
         signUpItem?.isVisible = !loggedIn()
@@ -83,7 +86,6 @@ class MainActivity : AppCompatActivity() {
             fuelTypeItem?.isVisible = it.admin
         }
         mapItem?.isVisible = loggedIn()
-        gasStationItem?.isVisible = loggedIn()
 
         return super.onPrepareOptionsMenu(menu)
     }
@@ -93,6 +95,7 @@ class MainActivity : AppCompatActivity() {
             R.id.item_sign_in -> startActivity(Intent(this, LoginActivity::class.java))
             R.id.item_sign_up -> startActivity(Intent(this, RegisterActivity::class.java))
             R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
+            R.id.item_gas_station -> startActivity(postoIntent)
             R.id.item_fuel -> startActivity(Intent(this, FuelList::class.java))
             R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_map -> {
@@ -104,11 +107,6 @@ class MainActivity : AppCompatActivity() {
 //                }
                 // intent.putExtra("gasStationList", gasStation as Serializable)
                 intent.putExtra("location", locale)
-                startActivity(intent)
-            }
-            R.id.item_gas_station_and_address -> {
-                val intent = Intent(this, GasStationActivity::class.java)
-                intent.putExtra("id", 1)
                 startActivity(intent)
             }
             R.id.item_sign_out -> signOut()
@@ -165,6 +163,10 @@ class MainActivity : AppCompatActivity() {
                         locale.latitude,
                         locale.longitude
                     )?.let {
+                        postoIntent.putExtra(
+                            "cityName",
+                            it
+                        )
                         RetrofitClient.instance.findGasStationByCidade(
                             it
                         )
@@ -192,7 +194,11 @@ class MainActivity : AppCompatActivity() {
                                                     if (resp.contains("message")) {
                                                         resp = JSONObject(resp).getString("message")
                                                     }
-                                                    Toast.makeText(applicationContext, resp, Toast.LENGTH_SHORT)
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        resp,
+                                                        Toast.LENGTH_SHORT
+                                                    )
                                                         .show()
                                                 }
                                             }

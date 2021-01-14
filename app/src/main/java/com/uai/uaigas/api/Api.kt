@@ -61,4 +61,6 @@ interface Api {
     fun insertAddress(@Body endereco: Endereco): Call<Endereco>
     @PUT("/endereco/{id}")
     fun updateAddress(@Path("id") id: Int, @Body endereco: Endereco): Call<Endereco>
+    @GET("/endereco")
+    fun findAllAddress(): Call<List<Endereco>>
 }
