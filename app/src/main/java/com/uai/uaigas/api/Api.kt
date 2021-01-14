@@ -1,10 +1,7 @@
 package com.uai.uaigas.api
 
 import com.uai.uaigas.dto.EmailDTO
-import com.uai.uaigas.model.Combustivel
-import com.uai.uaigas.model.Endereco
-import com.uai.uaigas.model.TipoCombustivel
-import com.uai.uaigas.model.User
+import com.uai.uaigas.model.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -45,9 +42,22 @@ interface Api {
     @DELETE("/tipo-combustivel/{id}")
     fun deleteFuelType(@Path("id") id: Long): Call<Void>
 
-    @GET("/endereco/{city}")
+    @GET("/posto/endereco/{city}")
     fun findGasStationByCidade(@Path("city") city: String): Call<List<Endereco>>
 
     @DELETE("/posto/{id}")
     fun deleteGasStation(@Path("id") id: Long): Call<Void>
+    
+    @GET("/posto/{id}")
+    fun findGasStation(@Path("id") id: Int): Call<Posto>
+    @POST
+    fun insertGasStation(@Body posto: Posto): Call<Posto>
+    @PUT("/posto/{id}")
+    fun updateGasStation(@Path("id") id: Long, @Body posto: Posto): Call<Posto>
+    @GET("/endereco/{id}")
+    fun findAddress(@Path("id") id: Int): Call<Endereco>
+    @POST
+    fun insertAddress(@Body endereco: Endereco): Call<Endereco>
+    @PUT("/endereco/{id}")
+    fun updateAddress(@Path("id") id: Long, @Body endereco: Endereco): Call<Endereco>
 }
