@@ -108,6 +108,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.item_gas_station_and_address -> {
                 val intent = Intent(this, GasStationActivity::class.java)
+                intent.putExtra("id", 1)
                 startActivity(intent)
             }
             R.id.item_sign_out -> signOut()

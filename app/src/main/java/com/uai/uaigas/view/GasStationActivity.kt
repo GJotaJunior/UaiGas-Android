@@ -153,56 +153,7 @@ class GasStationActivity : AppCompatActivity() {
                                     state.editText?.setText(it.estado)
                                     cep.editText?.setText(it.cep)
                                     Log.d("idPosto", it.posto?.id.toString())
-                                    it.posto?.id?.let { it1 ->
-                                        RetrofitClient.instance.findGasStation(it1.toInt())
-                                            .enqueue(object : Callback<Posto> {
-                                                override fun onFailure(
-                                                    call: Call<Posto>,
-                                                    t: Throwable
-                                                ) {
-                                                    Toast.makeText(
-                                                        applicationContext,
-                                                        "Ocorreu um erro durante o carregamento das informações, tente novamente mais tarde!",
-                                                        Toast.LENGTH_LONG
-                                                    ).show()
-                                                }
-
-                                                override fun onResponse(
-                                                    call: Call<Posto>,
-                                                    response: Response<Posto>
-                                                ) {
-                                                    when {
-                                                        response.isSuccessful -> {
-                                                            response.body()?.let {
-                                                                Log.d("posto", it.id.toString())
-                                                                name.editText?.setText(it.descricao)
-                                                            }
-                                                        }
-                                                        response.code() == 400 -> {
-                                                            response.errorBody()?.let {
-                                                                var resp = it.string()
-                                                                if (resp.contains("message")) {
-                                                                    resp =
-                                                                        JSONObject(resp).getString("message")
-                                                                }
-                                                                Toast.makeText(
-                                                                    applicationContext,
-                                                                    resp,
-                                                                    Toast.LENGTH_SHORT
-                                                                )
-                                                                    .show()
-                                                            }
-                                                        }
-                                                        else -> Toast.makeText(
-                                                            applicationContext,
-                                                            "Ocorreu um erro durante o carregamento das informações, tente novamente!",
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
-                                            }
-                                            )
-                                    }
+                                    name.editText?.setText(it.posto!!.descricao)
                                 }
                             }
                             response.code() == 400 -> {
@@ -319,7 +270,6 @@ class GasStationActivity : AppCompatActivity() {
         }
     }
 
-
     private fun insertGasStationAndAddress() {
         RetrofitClient.instance.insertGasStation(gasStation)
             .enqueue(object : Callback<Posto> {
@@ -408,7 +358,6 @@ class GasStationActivity : AppCompatActivity() {
                 }
             })
     }
-
 
     private fun checkIntent(id: Int) {
         if (id == 0)
