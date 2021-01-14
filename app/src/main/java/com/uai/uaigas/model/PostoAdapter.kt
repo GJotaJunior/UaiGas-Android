@@ -13,22 +13,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class CombustivelAdapter : RecyclerView.Adapter<CombustivelHolder> {
+class PostoAdapter : RecyclerView.Adapter<PostoHolder> {
 
-    var data: ArrayList<Combustivel>? = null
+    var data: ArrayList<Posto>? = null
     var viewMaker: LayoutInflater? = null
     var context: Context?
 
-    constructor(data: ArrayList<Combustivel>?, context: Context?) {
+    constructor(data: ArrayList<Posto>?, context: Context?) {
         this.data = data
         viewMaker = LayoutInflater.from(context)
         this.context = context
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CombustivelHolder {
-        return CombustivelHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostoHolder {
+        return PostoHolder(
             viewMaker!!.inflate(
-                R.layout.item_tipo_combustivel,
+                R.layout.item_posto,
                 parent,
                 false
             )
@@ -37,17 +37,18 @@ class CombustivelAdapter : RecyclerView.Adapter<CombustivelHolder> {
 
     override fun getItemCount(): Int = data!!.size
 
-    override fun onBindViewHolder(holder: CombustivelHolder, position: Int) {
-        holder.name.text = data!![position].nome
+
+    override fun onBindViewHolder(holder: PostoHolder, position: Int) {
+        holder.descricao.text = data!![position].descricao
+        holder.endereco.text = data!![position].endereco.toString()
         holder.edit.setOnClickListener {
-            val i = Intent(it.context, EditFuelActivity::class.java)
-            i.putExtra("id", (1 + position).toString())
-            i.putExtra("description", data!![position].nome)
-            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            it.context?.startActivity(i)
+//            val i = Intent(it.context, EditGasStationActivity::class.java)
+//            i.putExtra("id", (1 + position).toString())
+//            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+//            it.context?.startActivity(i)
         }
         holder.delete.setOnClickListener {
-            RetrofitClient.instance.deleteFuel((1 + position).toLong()).enqueue(object :
+            RetrofitClient.instance.deleteGasStation((1 + position).toLong()).enqueue(object :
                 Callback<Void> {
                 override fun onFailure(call: Call<Void>, t: Throwable) {
                     Toast.makeText(

@@ -11,6 +11,7 @@ class Posto() : Parcelable {
     var status: PostoStatus? = null
     var reclamacoes: List<Reclamacao>? = null
     var combustiveis: List<CombustivelPosto>? = null
+    var endereco: Endereco? = null
 
     constructor(parcel: Parcel) : this() {
         id = parcel.readValue(Long::class.java.classLoader) as? Long

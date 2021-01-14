@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.uai.uaigas.R
 
-class CombustivelHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var name: TextView = itemView.findViewById(R.id.description)
+class PostoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    var descricao: TextView = itemView.findViewById(R.id.description)
     var edit: MaterialButton = itemView.findViewById(R.id.edit)
     var delete: MaterialButton = itemView.findViewById(R.id.delete)
+    var endereco: TextView = itemView.findViewById(R.id.endereco)
 }

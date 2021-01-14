@@ -47,4 +47,7 @@ interface Api {
 
     @GET("/endereco/{city}")
     fun findGasStationByCidade(@Path("city") city: String): Call<List<Endereco>>
+
+    @DELETE("/posto/{id}")
+    fun deleteGasStation(@Path("id") id: Long): Call<Void>
 }
