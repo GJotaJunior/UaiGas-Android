@@ -16,6 +16,7 @@ import android.os.Parcelable
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
@@ -63,6 +64,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun verPostos(view: View) {
+        startActivity(postoIntent)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
         return true
@@ -95,7 +100,6 @@ class MainActivity : AppCompatActivity() {
             R.id.item_sign_in -> startActivity(Intent(this, LoginActivity::class.java))
             R.id.item_sign_up -> startActivity(Intent(this, RegisterActivity::class.java))
             R.id.item_profile -> startActivity(Intent(this, ProfileActivity::class.java))
-            R.id.item_gas_station -> startActivity(postoIntent)
             R.id.item_fuel -> startActivity(Intent(this, FuelList::class.java))
             R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_map -> {

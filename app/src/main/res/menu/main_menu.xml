@@ -26,11 +26,6 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/item_gas_station"
-        android:title="Postos"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/item_fuel"
         android:title="Combustível"
         android:visible="false"
