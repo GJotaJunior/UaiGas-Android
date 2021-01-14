@@ -47,13 +47,14 @@ interface Api {
 
     @DELETE("/posto/{id}")
     fun deleteGasStation(@Path("id") id: Long): Call<Void>
-    
+
     @GET("/posto/{id}")
     fun findGasStation(@Path("id") id: Int): Call<Posto>
     @POST
     fun insertGasStation(@Body posto: Posto): Call<Posto>
     @PUT("/posto/{id}")
     fun updateGasStation(@Path("id") id: Long, @Body posto: Posto): Call<Posto>
+
     @GET("/endereco/{id}")
     fun findAddress(@Path("id") id: Int): Call<Endereco>
     @POST
