@@ -13,8 +13,10 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
@@ -26,6 +28,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.model.Endereco
+import com.uai.uaigas.model.Posto
 import com.uai.uaigas.model.User
 import com.uai.uaigas.service.AuthService
 import org.json.JSONObject
@@ -39,8 +42,10 @@ class MainActivity : AppCompatActivity() {
 
     private var loggedIn = AuthService.loggedIn
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
-    private lateinit var gasStationList: List<Endereco>
+    private lateinit var adresses: List<Endereco>
     private lateinit var locale: LatLng
+
+    lateinit var postoIntent: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,11 +55,17 @@ class MainActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
+        postoIntent = Intent(applicationContext, GasStationList::class.java)
+
         loadUser()
 
         if (checkLocationPermission()) {
             getLocation()
         }
+    }
+
+    fun verPostos(view: View) {
+        startActivity(postoIntent)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -93,7 +104,12 @@ class MainActivity : AppCompatActivity() {
             R.id.item_fuel_type -> startActivity(Intent(this, FuelTypeList::class.java))
             R.id.item_map -> {
                 val intent = Intent(this, MapActivity::class.java)
-                intent.putExtra("gasStationList", gasStationList as Serializable)
+                // intent.putExtra("adresses", adresses as Serializable)
+                var gasStation: List<Posto> = listOf()
+//                adresses?.forEach {
+//                    it.posto?.let { it1 -> gasStation.toMutableList().add(Posto(it1.id, it1.descricao)) }
+//                }
+                // intent.putExtra("gasStationList", gasStation as Serializable)
                 intent.putExtra("location", locale)
                 startActivity(intent)
             }
@@ -151,6 +167,10 @@ class MainActivity : AppCompatActivity() {
                         locale.latitude,
                         locale.longitude
                     )?.let {
+                        postoIntent.putExtra(
+                            "cityName",
+                            it
+                        )
                         RetrofitClient.instance.findGasStationByCidade(
                             it
                         )
@@ -170,7 +190,7 @@ class MainActivity : AppCompatActivity() {
                                     if (response != null) {
                                         when {
                                             response.isSuccessful -> {
-                                                gasStationList = response?.body()!!
+                                                adresses = response?.body()!!
                                             }
                                             response.code() == 400 -> {
                                                 response.errorBody()?.let {
@@ -178,7 +198,11 @@ class MainActivity : AppCompatActivity() {
                                                     if (resp.contains("message")) {
                                                         resp = JSONObject(resp).getString("message")
                                                     }
-                                                    Toast.makeText(applicationContext, resp, Toast.LENGTH_SHORT)
+                                                    Toast.makeText(
+                                                        applicationContext,
+                                                        resp,
+                                                        Toast.LENGTH_SHORT
+                                                    )
                                                         .show()
                                                 }
                                             }

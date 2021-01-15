@@ -18,4 +18,16 @@
     <string name="user_profile_photo">Foto de perfil do usuário</string>
     <string name="update_profile">Atualizar perfil</string>
     <string name="your_profile">Seu perfil</string>
+    <string name="gasStation">Posto</string>
+    <string name="save_gasStation">Salvar Posto</string>
+    <string name="address">Endereço</string>
+    <string name="street">Logradouro</string>
+    <string name="number">Número</string>
+    <string name="adjunct">Complemento</string>
+    <string name="district">Bairro</string>
+    <string name="city">Cidade</string>
+    <string name="state">Estado</string>
+    <string name="cep">CEP</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
 </resources>

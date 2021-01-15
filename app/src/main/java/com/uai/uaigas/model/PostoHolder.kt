@@ -9,6 +9,5 @@ import com.uai.uaigas.R
 class PostoHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     var descricao: TextView = itemView.findViewById(R.id.description)
     var edit: MaterialButton = itemView.findViewById(R.id.edit)
-    var delete: MaterialButton = itemView.findViewById(R.id.delete)
     var endereco: TextView = itemView.findViewById(R.id.endereco)
 }

@@ -9,17 +9,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.uai.uaigas.R
 import com.uai.uaigas.api.RetrofitClient
 import com.uai.uaigas.view.EditFuelActivity
+import com.uai.uaigas.view.GasStationActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class PostoAdapter : RecyclerView.Adapter<PostoHolder> {
 
-    var data: ArrayList<Posto>? = null
+    var data: ArrayList<Endereco>? = null
     var viewMaker: LayoutInflater? = null
     var context: Context?
 
-    constructor(data: ArrayList<Posto>?, context: Context?) {
+    constructor(data: ArrayList<Endereco>?, context: Context?) {
         this.data = data
         viewMaker = LayoutInflater.from(context)
         this.context = context
@@ -39,44 +40,13 @@ class PostoAdapter : RecyclerView.Adapter<PostoHolder> {
 
 
     override fun onBindViewHolder(holder: PostoHolder, position: Int) {
-        holder.descricao.text = data!![position].descricao
-        holder.endereco.text = data!![position].endereco.toString()
+        holder.descricao.text = data!![position].posto!!.descricao
+        holder.endereco.text = data!![position].toString()
         holder.edit.setOnClickListener {
-//            val i = Intent(it.context, EditGasStationActivity::class.java)
-//            i.putExtra("id", (1 + position).toString())
-//            i.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-//            it.context?.startActivity(i)
-        }
-        holder.delete.setOnClickListener {
-            RetrofitClient.instance.deleteGasStation((1 + position).toLong()).enqueue(object :
-                Callback<Void> {
-                override fun onFailure(call: Call<Void>, t: Throwable) {
-                    Toast.makeText(
-                        context!!,
-                        "Ocorreu um erro, tente novamente mais tarde!",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-
-                override fun onResponse(call: Call<Void>, response: Response<Void>) {
-                    when {
-                        response.isSuccessful -> {
-                            data!!.removeAt(position)
-                            notifyDataSetChanged()
-                            Toast.makeText(
-                                context!!,
-                                "Excluido com sucesso!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                        else -> Toast.makeText(
-                            context!!,
-                            "Você não pode excluir um combustível que está sendo usado!",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            })
+            val intent = Intent(it.context, GasStationActivity::class.java)
+            intent.putExtra("id", (1+position))
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            it.context?.startActivity(intent)
         }
     }
 }
